@@ -26,10 +26,11 @@ public:
     void createStudent();
     void viewStudent();
     void viewAllStudents();
-    void updateStudent(int id);
-    void deleteStudent(int id);
+    void updateStudent(string id, string newName,string newEmail, string newAge, string newPassword);
+    void deleteStudent(string id);
     void openStudentsFile();
     void saveStudentToFile();
+    void sortStudentsNames();
 };
 
 void Student::createStudent()
@@ -71,7 +72,6 @@ void Student::viewAllStudents()
 
     cout << "Students List" << endl;
     cout << "=============" << endl;
-    cout << "ID                             Names                         Email            Age                   Password     " << endl;
     cout << endl;
 
     for (int x = 0; x < maxRow; x++)
@@ -89,6 +89,26 @@ void Student::viewAllStudents()
     }
 
     cout << "-------------------------------" << endl;
+}
+
+void Student::updateStudent(string id, string newName,string newEmail, string newAge, string newPassword){
+    int counter =0;
+
+    for(int x=0;x<maxRow;x++){
+        if(studentId[x] == id){
+            counter ++;
+            studentNames[x] = newName;
+            studentEmail[x] = newEmail;
+            studentAge[x] = newAge;
+            studentPassword[x] = newPassword;
+            cout<<"Student updated successfully"<<endl;
+             break;
+        }
+    }
+
+    if(counter == 0){
+        cout<<"Student not found"<<endl;
+    }
 }
 
 void Student::openStudentsFile()
@@ -112,7 +132,6 @@ void Student::openStudentsFile()
             while ((pos = line.find(delimeter)) != std::string::npos)
             {
                 token = line.substr(0, pos);
-                std::cout << token << std::endl;
                 line.erase(0, pos + delimeter.length());
                 if(counter==1){
                     studentId[x] = token;
@@ -152,8 +171,17 @@ void Student::saveStudentToFile()
         }
         else
         {
-            studentsFile << studentId[x] + "," + studentNames[x] + "," + studentEmail[x] + "," + studentAge[x] + "," + studentPassword[x] + "," + studentRole[x];
+            studentsFile << "," + studentId[x] + "," + studentNames[x] + "," + studentEmail[x] + "," + studentAge[x] + "," + studentPassword[x] + "," + studentRole[x] + ","<<endl;
         }
+    }
+}
+
+
+void Student::sortStudentsNames(){
+    // sort(studentNames, studentNames + maxRow);
+    sort(begin(studentNames), end(studentNames));
+    for(auto n: studentNames){
+        cout<<n<<endl;
     }
 }
 
@@ -161,6 +189,11 @@ int main()
 {
     Student std;
     int option;
+    string newName;
+    string newEmail;
+    string newAge;
+    string newPassword;
+    string id;
 
     std.openStudentsFile();
 
@@ -172,7 +205,9 @@ int main()
 
         cout << "1. create new student" << endl;
         cout << "2. view all students" << endl;
-        cout << "3. Exit the system " << endl;
+        cout<<  "3. update student"<<endl;  
+        cout<<  "4. sort students"<<endl;
+        cout << "5. Exit the system " << endl;
         cout << "Enter your option" << endl;
         cin >> option;
 
@@ -187,13 +222,33 @@ int main()
             std.viewAllStudents();
             break;
 
+        case 3:
+             cin.ignore();
+             cout<<"Enter the student id"<<endl;
+             getline(cin,id);
+             cout<<"Enter the new name"<<endl;
+             getline(cin,newEmail);
+             cout<<"Enter the new email"<<endl;
+             getline(cin,newEmail);
+             cout<<"Enter the new age"<<endl;
+             getline(cin,newAge);
+             cout<<"Enter the new password"<<endl;
+             getline(cin,newPassword);
+             std.updateStudent(id,newName,newEmail,newAge,newPassword);
+             break;
+
+
+        case 4:
+             std.sortStudentsNames();
+             break;
+                  
         default:
 
             cout << "Invalid option" << endl;
             break;
         }
 
-    } while (option != 3);
+    } while (option != 5);
 
     std.saveStudentToFile();
 
